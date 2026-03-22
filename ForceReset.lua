@@ -5,16 +5,22 @@ local player = Players.LocalPlayer
 
 module.mode = "Humanoid"
 
+local function getChar()
+    return player.Character or player.CharacterAdded:Wait()
+end
+
 function module.doReset()
 
-    local char = player.Character
+    local char = getChar()
     if not char then return end
 
     local hum = char:FindFirstChildOfClass("Humanoid")
     local root = char:FindFirstChild("HumanoidRootPart")
 
     if module.mode == "Humanoid" then
-        if hum then hum.Health = 0 end
+        if hum then
+            hum.Health = 0
+        end
 
     elseif module.mode == "Destroy" then
         char:Destroy()
@@ -30,13 +36,18 @@ function module.doReset()
 
 end
 
+-- ⭐ THIS is what loader calls
+function module.reset()
+    module.doReset()
+end
+
 function module.init(tab)
 
     local box = tab:AddLeftGroupbox("Force Reset")
 
     box:AddDropdown("FRMode",{
         Values = {"Humanoid","Destroy","LoadCharacter","Void"},
-        Default = 1,
+        Default = "Humanoid",
         Text = "Reset Mode"
     })
 
@@ -45,7 +56,7 @@ function module.init(tab)
     end)
 
     box:AddButton("Force Reset",function()
-        module.doReset()
+        module.reset()
     end)
 
 end
