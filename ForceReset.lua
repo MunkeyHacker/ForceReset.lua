@@ -3,6 +3,13 @@ local module = {}
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
+module.meta = {
+    name = "Force Reset",
+    tab = "Movement",
+    side = "Right",
+    priority = 2
+}
+
 module.mode = "Humanoid"
 
 local function getChar()
@@ -18,32 +25,37 @@ function module.doReset()
     local root = char:FindFirstChild("HumanoidRootPart")
 
     if module.mode == "Humanoid" then
+
         if hum then
             hum.Health = 0
         end
 
     elseif module.mode == "Destroy" then
+
         char:Destroy()
 
     elseif module.mode == "LoadCharacter" then
+
         player:LoadCharacter()
 
     elseif module.mode == "Void" then
+
         if root then
             root.CFrame = CFrame.new(0,-500,0)
         end
+
     end
 
 end
 
--- ⭐ THIS is what loader calls
+-- public call (other modules / keybind engine etc)
 function module.reset()
     module.doReset()
 end
 
-function module.init(tab)
+function module.init(ctx)
 
-    local box = tab:AddLeftGroupbox("Force Reset")
+    local box = ctx.box
 
     box:AddDropdown("FRMode",{
         Values = {"Humanoid","Destroy","LoadCharacter","Void"},
